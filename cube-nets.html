@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正方体展开图学习</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn.active {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .panel h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        #cube-canvas {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+            cursor: move;
+        }
+
+        .info-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .info-content {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .description {
+            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .all-nets {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .all-nets h2 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .nets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .net-item {
+            cursor: pointer;
+            padding: 10px;
+            border: 3px solid transparent;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .net-item:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .net-item.active {
+            border-color: #ffd700;
+            background: #fff9e6;
+        }
+
+        .net-item canvas {
+            width: 100%;
+            display: block;
+        }
+
+        .net-item-label {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .hint {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 正方体展开图学习</h1>
+        <p class="subtitle">正方体有 11 种不同的展开方式，点击按钮探索每一种！</p>
+
+        <div class="controls">
+            <button class="btn" id="prevBtn">◀ 上一个</button>
+            <button class="btn" id="playBtn">▶ 自动播放</button>
+            <button class="btn" id="nextBtn">下一个 ▶</button>
+            <button class="btn active" id="foldBtn">📦 折叠成立方体</button>
+            <button class="btn" id="unfoldBtn">📐 展开成平面图</button>
+        </div>
+
+        <div class="info-panel">
+            <div class="info-content">
+                <div class="type-badge" id="typeBadge">第 1 种</div>
+                <div class="description" id="description">点击按钮查看不同的展开图</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>🎲 3D 展开动画（可拖拽旋转）</h2>
+            <canvas id="cube-canvas" width="700" height="700"></canvas>
+        </div>
+
+        <div class="all-nets">
+            <h2>📋 所有 11 种展开图</h2>
+            <div class="nets-grid" id="netsGrid"></div>
+        </div>
+
+        <p class="hint">💡 拖拽 3D 正方体可以旋转查看，点击小图快速切换</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const allNets = [
+            {type: "1-4-1型 (1)", description: "中间4个正方形，上下各1个", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [1,0], axis: 'x', angle: 90}, {pos: [1,2], axis: 'x', angle: -90}
+            ]},
+            {type: "1-4-1型 (2)", description: "中间4个正方形，上下各1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [1,0], axis: 'x', angle: 90}, {pos: [2,2], axis: 'y', angle: -90, parent: 2}
+            ]},
+            {type: "1-4-1型 (3)", description: "中间4个正方形，上下各1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [1,0], axis: 'x', angle: 90}, {pos: [3,2], axis: 'y', angle: -90, parent: 3}
+            ]},
+            {type: "1-4-1型 (4)", description: "中间4个正方形，上下各1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [2,0], axis: 'y', angle: 90, parent: 2}, {pos: [1,2], axis: 'x', angle: -90}
+            ]},
+            {type: "1-4-1型 (5)", description: "中间4个正方形，上下各1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [2,0], axis: 'y', angle: 90, parent: 2}, {pos: [2,2], axis: 'y', angle: -90, parent: 2}
+            ]},
+            {type: "1-4-1型 (6)", description: "中间4个正方形，上下各1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [2,0], axis: 'y', angle: 90, parent: 2}, {pos: [3,2], axis: 'y', angle: -90, parent: 3}
+            ]},
+            {type: "2-3-1型 (7)", description: "中间3个正方形，上面2个，下面1个", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [0,0], axis: 'y', angle: 90, parent: 1}, {pos: [3,2], axis: 'y', angle: -90, parent: 3}
+            ]},
+            {type: "2-3-1型 (8)", description: "中间3个正方形，上面2个，下面1个（位置不同）", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [1,0], axis: 'x', angle: 90}, {pos: [2,0], axis: 'x', angle: 180, parent: 3}, {pos: [2,2], axis: 'y', angle: -90, parent: 2}
+            ]},
+            {type: "2-2-2型 (9)", description: "三行各2个正方形，阶梯状排列", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [2,2], axis: 'y', angle: -90, parent: 2}, {pos: [3,2], axis: 'y', angle: -180, parent: 2}, {pos: [2,0], axis: 'y', angle: 90, parent: 2}
+            ]},
+            {type: "3-3型 (10)", description: "两行各3个正方形，错开排列", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [1,0], axis: 'x', angle: 90}, {pos: [2,0], axis: 'x', angle: 180, parent: 3}, {pos: [3,1], axis: 'y', angle: -90, parent: 2}
+            ]},
+            {type: "1-3-2型 (11)", description: "中间3个正方形，上面1个，下面2个", faces: [
+                {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
+                {pos: [3,1], axis: 'y', angle: -180}, {pos: [1,0], axis: 'x', angle: 90}, {pos: [2,2], axis: 'y', angle: -90, parent: 2}, {pos: [3,2], axis: 'y', angle: -180, parent: 2}
+            ]}
+        ];
+
+        let currentIndex = 0, isPlaying = false, playInterval = null;
+        let isFolded = false, isAnimating = false, animationProgress = 0;
+        const cubeCanvas = document.getElementById('cube-canvas');
+        const netsGrid = document.getElementById('netsGrid');
+        let scene, camera, renderer, cubeGroup, faceMeshes = [];
+        const colors = [0xFF6B6B, 0x4ECDC4, 0x45B7D1, 0xFFA07A, 0x98D8C8, 0xF7DC6F];
+        let pivots = [];
+        let builtNetIndex = -1;
+
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf5f5f5);
+            camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+            camera.position.set(0, 0, 8);
+            renderer = new THREE.WebGLRenderer({canvas: cubeCanvas, antialias: true});
+            renderer.setSize(cubeCanvas.width, cubeCanvas.height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            dirLight.position.set(5, 5, 5);
+            scene.add(dirLight);
+
+            cubeGroup = new THREE.Group();
+            scene.add(cubeGroup);
+
+            for (let i = 0; i < 6; i++) {
+                const geo = new THREE.BoxGeometry(1, 0.05, 1);
+                const mat = new THREE.MeshPhongMaterial({color: colors[i], shininess: 100, side: THREE.DoubleSide});
+                const mesh = new THREE.Mesh(geo, mat);
+
+                const edges = new THREE.EdgesGeometry(geo);
+                const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({color: 0x333333}));
+                mesh.add(line);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 256; canvas.height = 256;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#' + colors[i].toString(16).padStart(6, '0');
+                ctx.fillRect(0, 0, 256, 256);
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 120px Arial';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(i + 1, 128, 128);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                const textPlane = new THREE.Mesh(
+                    new THREE.PlaneGeometry(0.9, 0.9),
+                    new THREE.MeshBasicMaterial({map: texture, transparent: true, side: THREE.DoubleSide})
+                );
+                textPlane.position.y = 0.03;
+                textPlane.rotation.x = -Math.PI / 2;
+                mesh.add(textPlane);
+                faceMeshes.push(mesh);
+            }
+        }
+
+        function clearHierarchy() {
+            while (cubeGroup.children.length > 0) {
+                cubeGroup.remove(cubeGroup.children[0]);
+            }
+            pivots = [];
+        }
+
+        function buildNet0() {
+            clearHierarchy();
+
+            // Face0 - base face at origin, lies in XZ plane
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1 at face0's left edge (x = -0.5), hinge axis = Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2 at face0's right edge (x = +0.5), hinge axis = Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3 at face2's right edge (child of p2), hinge axis = Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4 at face0's back edge (z = -0.5), hinge axis = X
+            const p4 = new THREE.Group();
+            p4.position.set(0, 0, -0.5);
+            cubeGroup.add(p4);
+            faceMeshes[4].position.set(0, 0, -0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5 at face0's front edge (z = +0.5), hinge axis = X
+            const p5 = new THREE.Group();
+            p5.position.set(0, 0, 0.5);
+            cubeGroup.add(p5);
+            faceMeshes[5].position.set(0, 0, 0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 0;
+        }
+
+        function buildNet1() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face0 back edge (z=-0.5), fold around X
+            const p4 = new THREE.Group();
+            p4.position.set(0, 0, -0.5);
+            cubeGroup.add(p4);
+            faceMeshes[4].position.set(0, 0, -0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face2 front edge (child of p2), fold around X
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, 0.5);
+            p2.add(p5);
+            faceMeshes[5].position.set(0, 0, 0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 1;
+        }
+
+        function buildNet2() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face0 back edge (z=-0.5), fold around X
+            const p4 = new THREE.Group();
+            p4.position.set(0, 0, -0.5);
+            cubeGroup.add(p4);
+            faceMeshes[4].position.set(0, 0, -0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face3 front edge (child of p3), fold around X
+            // p3 local space: face3 center at (0.5,0,0), front edge at (0.5,0,0.5)
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, 0.5);
+            p3.add(p5);
+            faceMeshes[5].position.set(0, 0, 0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 2;
+        }
+
+        function buildFlatNet(netIndex) {
+            clearHierarchy();
+            const net = allNets[netIndex];
+            const size = 1.05;
+            const xs = net.faces.map(f => f.pos[0]);
+            const zs = net.faces.map(f => f.pos[1]);
+            const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+            const cz = (Math.min(...zs) + Math.max(...zs)) / 2;
+
+            net.faces.forEach((face, i) => {
+                if (i >= faceMeshes.length) return;
+                const mesh = faceMeshes[i];
+                mesh.position.set((face.pos[0] - cx) * size, 0, (face.pos[1] - cz) * size);
+                mesh.rotation.set(0, 0, 0);
+                cubeGroup.add(mesh);
+            });
+            builtNetIndex = netIndex;
+        }
+
+        function updateFaces(progress) {
+            const angle = (Math.PI / 2) * progress;
+            if (currentIndex === 0) {
+                if (builtNetIndex !== 0) buildNet0();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = angle;   // face4: back wall
+                pivots[4].rotation.x = -angle;  // face5: front wall
+            } else if (currentIndex === 1) {
+                if (builtNetIndex !== 1) buildNet1();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = angle;   // face4: back wall
+                pivots[4].rotation.x = -angle;  // face5: front wall (via face2)
+            } else if (currentIndex === 2) {
+                if (builtNetIndex !== 2) buildNet2();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = angle;   // face4: back wall
+                pivots[4].rotation.x = -angle;  // face5: front wall (via face3)
+            } else {
+                if (builtNetIndex !== currentIndex) buildFlatNet(currentIndex);
+            }
+        }
+
+        function drawThumbnail(canvas, faces) {
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const squares = faces.map(f => f.pos);
+            const minX = Math.min(...squares.map(s => s[0]));
+            const maxX = Math.max(...squares.map(s => s[0]));
+            const minY = Math.min(...squares.map(s => s[1]));
+            const maxY = Math.max(...squares.map(s => s[1]));
+            const w = maxX - minX + 1, h = maxY - minY + 1;
+            const cell = Math.min(110/w, 110/h);
+            const ox = (canvas.width - w*cell)/2, oy = (canvas.height - h*cell)/2;
+
+            squares.forEach(([x, y], i) => {
+                ctx.fillStyle = '#' + colors[i].toString(16).padStart(6, '0');
+                ctx.fillRect(ox + (x-minX)*cell, oy + (y-minY)*cell, cell-2, cell-2);
+                ctx.strokeStyle = '#333'; ctx.lineWidth = 1.5;
+                ctx.strokeRect(ox + (x-minX)*cell, oy + (y-minY)*cell, cell-2, cell-2);
+                ctx.fillStyle = '#fff'; ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(i+1, ox + (x-minX)*cell + cell/2, oy + (y-minY)*cell + cell/2);
+            });
+        }
+
+        function initThumbnails() {
+            netsGrid.innerHTML = '';
+            allNets.forEach((net, idx) => {
+                const item = document.createElement('div');
+                item.className = 'net-item' + (idx === currentIndex ? ' active' : '');
+                item.onclick = () => { currentIndex = idx; updateDisplay(); };
+                const canvas = document.createElement('canvas');
+                canvas.width = 120; canvas.height = 120;
+                drawThumbnail(canvas, net.faces);
+                const label = document.createElement('div');
+                label.className = 'net-item-label';
+                label.textContent = `${idx+1}. ${net.type}`;
+                item.appendChild(canvas);
+                item.appendChild(label);
+                netsGrid.appendChild(item);
+            });
+        }
+
+        function updateDisplay() {
+            const net = allNets[currentIndex];
+            if (builtNetIndex !== -1 && builtNetIndex !== currentIndex) {
+                animationProgress = 0;
+                isFolded = false;
+            }
+            updateFaces(animationProgress);
+            renderer.render(scene, camera);
+            document.getElementById('typeBadge').textContent = `第 ${currentIndex+1} 种: ${net.type}`;
+            document.getElementById('description').textContent = net.description;
+            document.getElementById('foldBtn').classList.toggle('active', isFolded);
+            document.getElementById('unfoldBtn').classList.toggle('active', !isFolded);
+            document.querySelectorAll('.net-item').forEach((item, idx) => {
+                item.classList.toggle('active', idx === currentIndex);
+            });
+        }
+
+        function animateFold() {
+            if (isAnimating) return;
+            isAnimating = true;
+            const start = animationProgress, end = isFolded ? 0 : 1;
+            const startTime = Date.now();
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const p = Math.min(elapsed / 3000, 1);
+                const eased = p < 0.5 ? 4*p*p*p : 1 - Math.pow(-2*p+2, 3)/2;
+                animationProgress = start + (end - start) * eased;
+                updateDisplay();
+                if (p < 1) requestAnimationFrame(animate);
+                else { isAnimating = false; isFolded = !isFolded; updateDisplay(); }
+            }
+            animate();
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                btn.textContent = '⏸ 暂停'; btn.classList.add('active');
+                playInterval = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % allNets.length;
+                    updateDisplay();
+                }, 2000);
+            } else {
+                btn.textContent = '▶ 自动播放'; btn.classList.remove('active');
+                clearInterval(playInterval);
+            }
+        }
+
+        document.getElementById('prevBtn').onclick = () => {
+            currentIndex = (currentIndex - 1 + allNets.length) % allNets.length;
+            updateDisplay();
+        };
+        document.getElementById('nextBtn').onclick = () => {
+            currentIndex = (currentIndex + 1) % allNets.length;
+            updateDisplay();
+        };
+        document.getElementById('playBtn').onclick = togglePlay;
+        document.getElementById('foldBtn').onclick = () => { if (!isFolded && !isAnimating) animateFold(); };
+        document.getElementById('unfoldBtn').onclick = () => { if (isFolded && !isAnimating) animateFold(); };
+
+        let rotX = 0.3, rotY = 0.5, dragging = false, lastX = 0, lastY = 0;
+        cubeCanvas.onmousedown = (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; };
+        cubeCanvas.onmousemove = (e) => {
+            if (!dragging) return;
+            rotY += (e.clientX - lastX) * 0.01;
+            rotX += (e.clientY - lastY) * 0.01;
+            lastX = e.clientX; lastY = e.clientY;
+            cubeGroup.rotation.set(rotX, rotY, 0);
+            renderer.render(scene, camera);
+        };
+        cubeCanvas.onmouseup = cubeCanvas.onmouseleave = () => dragging = false;
+
+        cubeCanvas.ontouchstart = (e) => { dragging = true; lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; };
+        cubeCanvas.ontouchmove = (e) => {
+            if (!dragging) return; e.preventDefault();
+            rotY += (e.touches[0].clientX - lastX) * 0.01;
+            rotX += (e.touches[0].clientY - lastY) * 0.01;
+            lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+            cubeGroup.rotation.set(rotX, rotY, 0);
+            renderer.render(scene, camera);
+        };
+        cubeCanvas.ontouchend = () => dragging = false;
+
+        let autoRotate = true;
+        function autoRotateCube() {
+            if (!dragging && autoRotate) {
+                rotY += 0.005;
+                cubeGroup.rotation.y = rotY;
+                renderer.render(scene, camera);
+            }
+            requestAnimationFrame(autoRotateCube);
+        }
+
+        initThreeJS();
+        initThumbnails();
+        updateDisplay();
+        autoRotateCube();
+    </script>
+</body>
+</html>
