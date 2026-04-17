@@ -247,7 +247,7 @@
             ]},
             {type: "2-3-1型 (8)", description: "中间3个正方形，上面2个，下面1个（位置不同）", faces: [
                 {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
-                {pos: [1,0], axis: 'x', angle: 90}, {pos: [2,0], axis: 'x', angle: 180, parent: 3}, {pos: [2,2], axis: 'y', angle: -90, parent: 2}
+                {pos: [1,2], axis: 'x', angle: 90}, {pos: [2,2], axis: 'x', angle: 90}, {pos: [2,0], axis: 'x', angle: -90}
             ]},
             {type: "2-2-2型 (9)", description: "三行各2个正方形，阶梯状排列", faces: [
                 {pos: [1,1]}, {pos: [0,1], axis: 'y', angle: 90}, {pos: [2,1], axis: 'y', angle: -90},
@@ -483,6 +483,271 @@
             builtNetIndex = 2;
         }
 
+        function buildNet3() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face2 front edge (child of p2), fold around X
+            const p4 = new THREE.Group();
+            p4.position.set(0.5, 0, 0.5);
+            p2.add(p4);
+            faceMeshes[4].position.set(0, 0, 0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face0 back edge (z=-0.5), fold around X
+            const p5 = new THREE.Group();
+            p5.position.set(0, 0, -0.5);
+            cubeGroup.add(p5);
+            faceMeshes[5].position.set(0, 0, -0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 3;
+        }
+
+        function buildNet4() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face2 front edge (child of p2), fold around X
+            const p4 = new THREE.Group();
+            p4.position.set(0.5, 0, 0.5);
+            p2.add(p4);
+            faceMeshes[4].position.set(0, 0, 0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face2 back edge (child of p2), fold around X
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, -0.5);
+            p2.add(p5);
+            faceMeshes[5].position.set(0, 0, -0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 4;
+        }
+
+        function buildNet5() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face2 front edge (child of p2), fold around X
+            const p4 = new THREE.Group();
+            p4.position.set(0.5, 0, 0.5);
+            p2.add(p4);
+            faceMeshes[4].position.set(0, 0, 0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face3 back edge (child of p3), fold around X
+            // p3 local space: face3 center at (0.5,0,0), back edge at (0.5,0,-0.5)
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, -0.5);
+            p3.add(p5);
+            faceMeshes[5].position.set(0, 0, -0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 5;
+        }
+
+        function buildNet6() {
+            clearHierarchy();
+
+            // Face0 - base
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face2 right edge (child of p2), fold around Z
+            const p3 = new THREE.Group();
+            p3.position.set(1.0, 0, 0);
+            p2.add(p3);
+            faceMeshes[3].position.set(0.5, 0, 0);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face1 back edge (child of p1), fold around X
+            // p1 local space: face1 center at (-0.5,0,0), back edge at (-0.5,0,-0.5)
+            const p4 = new THREE.Group();
+            p4.position.set(-0.5, 0, -0.5);
+            p1.add(p4);
+            faceMeshes[4].position.set(0, 0, -0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face3 front edge (child of p3), fold around X
+            // p3 local space: face3 center at (0.5,0,0), front edge at (0.5,0,0.5)
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, 0.5);
+            p3.add(p5);
+            faceMeshes[5].position.set(0, 0, 0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 6;
+        }
+
+        function buildNet7() {
+            clearHierarchy();
+
+            // Face0 - base at (1,1)
+            faceMeshes[0].position.set(0, 0, 0);
+            faceMeshes[0].rotation.set(0, 0, 0);
+            cubeGroup.add(faceMeshes[0]);
+
+            // Pivot1: face0 left edge (x=-0.5), fold around Z -> face1 (left wall)
+            const p1 = new THREE.Group();
+            p1.position.set(-0.5, 0, 0);
+            cubeGroup.add(p1);
+            faceMeshes[1].position.set(-0.5, 0, 0);
+            faceMeshes[1].rotation.set(0, 0, 0);
+            p1.add(faceMeshes[1]);
+
+            // Pivot2: face0 right edge (x=+0.5), fold around Z -> face2 (right wall)
+            const p2 = new THREE.Group();
+            p2.position.set(0.5, 0, 0);
+            cubeGroup.add(p2);
+            faceMeshes[2].position.set(0.5, 0, 0);
+            faceMeshes[2].rotation.set(0, 0, 0);
+            p2.add(faceMeshes[2]);
+
+            // Pivot3: face0 front edge (z=+0.5), fold around X -> face3 (front wall)
+            const p3 = new THREE.Group();
+            p3.position.set(0, 0, 0.5);
+            cubeGroup.add(p3);
+            faceMeshes[3].position.set(0, 0, 0.5);
+            faceMeshes[3].rotation.set(0, 0, 0);
+            p3.add(faceMeshes[3]);
+
+            // Pivot4: face2 front edge (child of p2), fold around X -> face4 (front-bottom)
+            // p2 local space: face2 center at (0.5,0,0), front edge at (0.5,0,0.5)
+            const p4 = new THREE.Group();
+            p4.position.set(0.5, 0, 0.5);
+            p2.add(p4);
+            faceMeshes[4].position.set(0, 0, 0.5);
+            faceMeshes[4].rotation.set(0, 0, 0);
+            p4.add(faceMeshes[4]);
+
+            // Pivot5: face2 back edge (child of p2), fold around X -> face5 (back-top)
+            // p2 local space: face2 center at (0.5,0,0), back edge at (0.5,0,-0.5)
+            const p5 = new THREE.Group();
+            p5.position.set(0.5, 0, -0.5);
+            p2.add(p5);
+            faceMeshes[5].position.set(0, 0, -0.5);
+            faceMeshes[5].rotation.set(0, 0, 0);
+            p5.add(faceMeshes[5]);
+
+            pivots = [p1, p2, p3, p4, p5];
+            builtNetIndex = 7;
+        }
+
         function buildFlatNet(netIndex) {
             clearHierarchy();
             const net = allNets[netIndex];
@@ -525,6 +790,41 @@
                 pivots[2].rotation.z = angle;   // face3: top (via face2)
                 pivots[3].rotation.x = angle;   // face4: back wall
                 pivots[4].rotation.x = -angle;  // face5: front wall (via face3)
+            } else if (currentIndex === 3) {
+                if (builtNetIndex !== 3) buildNet3();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = -angle;  // face4: front wall (via face2)
+                pivots[4].rotation.x = angle;   // face5: back wall
+            } else if (currentIndex === 4) {
+                if (builtNetIndex !== 4) buildNet4();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = -angle;  // face4: front wall (via face2)
+                pivots[4].rotation.x = angle;   // face5: back wall (via face2)
+            } else if (currentIndex === 5) {
+                if (builtNetIndex !== 5) buildNet5();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = -angle;  // face4: front wall (via face2)
+                pivots[4].rotation.x = angle;   // face5: back wall (via face3)
+            } else if (currentIndex === 6) {
+                if (builtNetIndex !== 6) buildNet6();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.z = angle;   // face3: top (via face2)
+                pivots[3].rotation.x = angle;   // face4: back wall (via face1)
+                pivots[4].rotation.x = -angle;  // face5: front wall (via face3)
+            } else if (currentIndex === 7) {
+                if (builtNetIndex !== 7) buildNet7();
+                pivots[0].rotation.z = -angle;  // face1: left wall
+                pivots[1].rotation.z = angle;   // face2: right wall
+                pivots[2].rotation.x = -angle;  // face3: front wall
+                pivots[3].rotation.x = -angle;  // face4: front-bottom (via face2)
+                pivots[4].rotation.x = angle;   // face5: back-top (via face2)
             } else {
                 if (builtNetIndex !== currentIndex) buildFlatNet(currentIndex);
             }
