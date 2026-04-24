@@ -111,10 +111,14 @@
             flex-direction: column;
             gap: 12px;
             overflow-y: auto;
-            padding-right: 4px;
+            padding: 2px 4px 2px 2px;
         }
 
         .net-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
             width: 100%;
             border: 1px solid transparent;
             border-radius: 22px;
@@ -139,66 +143,21 @@
             box-shadow: 0 16px 34px rgba(216, 108, 74, 0.12);
         }
 
-        .net-item-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-
         .net-index {
             font-size: 14px;
             font-weight: 800;
             color: var(--accent);
+            flex-shrink: 0;
         }
 
         .net-pattern {
             color: var(--muted);
             font-size: 13px;
-        }
-
-        .net-item-bottom {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-        }
-
-        .net-meta h3 {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .net-meta p {
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.5;
+            flex-shrink: 0;
         }
 
         .content {
             padding: 24px;
-        }
-
-        .content-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 18px;
-            align-items: start;
-            margin-bottom: 20px;
-        }
-
-        .content-head h2 {
-            font-size: clamp(28px, 3vw, 40px);
-            line-height: 1.08;
-            letter-spacing: -0.04em;
-            margin-bottom: 10px;
-        }
-
-        .content-head p {
-            color: var(--muted);
-            font-size: 16px;
-            line-height: 1.7;
-            max-width: 680px;
         }
 
         .chips {
@@ -225,7 +184,7 @@
 
         .panel-grid {
             display: grid;
-            grid-template-columns: 320px minmax(0, 1fr);
+            grid-template-columns: 1fr;
             gap: 20px;
             align-items: stretch;
         }
@@ -289,6 +248,48 @@
             gap: 12px;
             align-items: center;
             margin-bottom: 16px;
+        }
+
+        .speed-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 4px;
+            margin-left: auto;
+        }
+
+        .speed-group label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            color: rgba(238, 247, 250, 0.7);
+            cursor: pointer;
+            transition: background 0.18s ease, color 0.18s ease;
+            user-select: none;
+        }
+
+        .speed-group input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .speed-group input[type="radio"]:checked + label {
+            background: rgba(255, 255, 255, 0.22);
+            color: #eef7fa;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+        }
+
+        .speed-group label:hover {
+            color: #eef7fa;
         }
 
         .btn {
@@ -450,10 +451,6 @@
                 padding: 18px;
             }
 
-            .content-head {
-                flex-direction: column;
-            }
-
             .chips {
                 justify-content: flex-start;
             }
@@ -461,6 +458,10 @@
             .range-wrap {
                 margin-left: 0;
                 width: 100%;
+            }
+
+            .speed-group {
+                margin-left: 0;
             }
 
             .viewer-card {
@@ -493,27 +494,7 @@
             </aside>
 
             <main class="content">
-                <div class="content-head">
-                    <div>
-                        <div class="eyebrow">当前选择</div>
-                        <h2 id="netTitle"></h2>
-                        <p id="netDescription"></p>
-                    </div>
-                    <div class="chips">
-                        <div class="chip" id="patternChip"></div>
-                        <div class="chip state" id="stateChip"></div>
-                    </div>
-                </div>
-
                 <div class="panel-grid">
-                    <section class="card">
-                        <div class="card-head">
-                            <h3>平面结构预览</h3>
-                            <span>与左侧选中项同步</span>
-                        </div>
-                        <div class="hero-net-wrap" id="heroNetWrap"></div>
-                    </section>
-
                     <section class="card viewer-card">
                         <div class="card-head">
                             <h3>3D 折叠 / 展开演示</h3>
@@ -524,6 +505,12 @@
                             <button class="btn" id="unfoldBtn">展开成平面</button>
                             <button class="btn primary" id="foldBtn">折叠成立方体</button>
                             <button class="btn" id="autoplayBtn">自动巡览</button>
+                            <div class="speed-group" role="radiogroup" aria-label="动画速度">
+                                <input type="radio" name="speed" id="speed1x" value="1" checked>
+                                <label for="speed1x">1x</label>
+                                <input type="radio" name="speed" id="speed2x" value="2">
+                                <label for="speed2x">2x</label>
+                            </div>
                             <div class="range-wrap">
                                 <label for="progressRange">折叠进度</label>
                                 <input id="progressRange" type="range" min="0" max="100" step="1" value="0">
@@ -669,11 +656,6 @@
         };
 
         const netList = document.getElementById("netList");
-        const heroNetWrap = document.getElementById("heroNetWrap");
-        const netTitle = document.getElementById("netTitle");
-        const netDescription = document.getElementById("netDescription");
-        const patternChip = document.getElementById("patternChip");
-        const stateChip = document.getElementById("stateChip");
         const viewerHint = document.getElementById("viewerHint");
         const progressText = document.getElementById("progressText");
         const progressRange = document.getElementById("progressRange");
@@ -687,6 +669,7 @@
         let animationFrame = null;
         let autoplayTimer = null;
         let autoplayEnabled = false;
+        let speedMultiplier = 1;
 
         let scene;
         let camera;
@@ -748,46 +731,24 @@
                 button.className = `net-item${index === currentNetIndex ? " active" : ""}`;
                 button.addEventListener("click", () => selectNet(index));
 
-                const top = document.createElement("div");
-                top.className = "net-item-top";
-                top.innerHTML = `
-                    <span class="net-index">${net.name}</span>
-                    <span class="net-pattern">${net.pattern}</span>
-                `;
-
-                const bottom = document.createElement("div");
-                bottom.className = "net-item-bottom";
+                const indexSpan = document.createElement("span");
+                indexSpan.className = "net-index";
+                indexSpan.textContent = net.name.replace(/\D/g, "");
 
                 const preview = createNetGrid(net, 18, true);
-                const meta = document.createElement("div");
-                meta.className = "net-meta";
-                meta.innerHTML = `
-                    <h3>${net.pattern}</h3>
-                    <p>${net.description}</p>
-                `;
 
-                bottom.appendChild(preview);
-                bottom.appendChild(meta);
-                button.appendChild(top);
-                button.appendChild(bottom);
+                const patternSpan = document.createElement("span");
+                patternSpan.className = "net-pattern";
+                patternSpan.textContent = net.pattern;
+
+                button.appendChild(indexSpan);
+                button.appendChild(preview);
+                button.appendChild(patternSpan);
                 netList.appendChild(button);
             });
         }
 
         function updateSelectedPreview() {
-            const net = NETS[currentNetIndex];
-            netTitle.textContent = `${net.name} · ${net.pattern}`;
-            netDescription.textContent = net.description;
-            patternChip.textContent = `${net.pattern} / 6 面`;
-
-            heroNetWrap.innerHTML = "";
-            const bounds = getBounds(net);
-            const width = bounds.maxX - bounds.minX + 1;
-            const height = bounds.maxY - bounds.minY + 1;
-            const maxCell = window.innerWidth < 760 ? 54 : 72;
-            const cellSize = Math.min(maxCell, Math.floor(280 / Math.max(width, height)) + 18);
-            heroNetWrap.appendChild(createNetGrid(net, cellSize, false));
-
             document.querySelectorAll(".net-item").forEach((item, index) => {
                 item.classList.toggle("active", index === currentNetIndex);
             });
@@ -917,10 +878,10 @@
         function hingeRotation(hinge, dir, amount) {
             hinge.rotation.set(0, 0, 0);
             const angle = (Math.PI / 2) * amount;
-            if (dir === "right") hinge.rotation.z = -angle;
-            if (dir === "left") hinge.rotation.z = angle;
-            if (dir === "down") hinge.rotation.x = angle;
-            if (dir === "up") hinge.rotation.x = -angle;
+            if (dir === "right") hinge.rotation.z = angle;
+            if (dir === "left") hinge.rotation.z = -angle;
+            if (dir === "down") hinge.rotation.x = -angle;
+            if (dir === "up") hinge.rotation.x = angle;
         }
 
         function getContentCenter() {
@@ -996,18 +957,20 @@
             }
         }
 
+        function getDuration() {
+            return speedMultiplier === 2 ? 1200 : 2400;
+        }
+
         function animateTo(target) {
             stopAnimation();
             const start = progress;
             const delta = target - start;
-            const duration = 900;
+            const duration = getDuration();
             const startTime = performance.now();
 
             function step(now) {
                 const t = Math.min(1, (now - startTime) / duration);
-                const eased = t < 0.5
-                    ? 4 * t * t * t
-                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                const eased = t;
                 progress = start + delta * eased;
                 progressRange.value = String(Math.round(progress * 100));
                 applyFoldProgress(progress);
@@ -1036,6 +999,7 @@
 
         function runAutoplayLoop() {
             if (!autoplayEnabled) return;
+            const duration = getDuration();
             animateTo(1);
             autoplayTimer = setTimeout(() => {
                 if (!autoplayEnabled) return;
@@ -1045,8 +1009,8 @@
                     currentNetIndex = (currentNetIndex + 1) % NETS.length;
                     updateUIForSelection();
                     runAutoplayLoop();
-                }, 1500);
-            }, 1600);
+                }, duration + 300);
+            }, duration + 400);
         }
 
         function startAutoplay() {
@@ -1064,13 +1028,10 @@
             unfoldBtn.classList.toggle("active", progress < 0.02);
 
             if (progress < 0.02) {
-                stateChip.textContent = "当前状态：平面展开";
                 viewerHint.textContent = "当前为平面状态，可点击“折叠成立方体”观看动画。";
             } else if (progress > 0.98) {
-                stateChip.textContent = "当前状态：已折叠成立方体";
                 viewerHint.textContent = "当前已完成折叠，可点击“展开成平面”回到原始展开图。";
             } else {
-                stateChip.textContent = "当前状态：正在折叠 / 展开";
                 viewerHint.textContent = "拖拽滑块可以手动观察每个面的旋转过程。";
             }
         }
@@ -1104,7 +1065,6 @@
                 alpha: true
             });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.outputEncoding = THREE.sRGBEncoding;
 
             rootSpinGroup = new THREE.Group();
             centerGroup = new THREE.Group();
@@ -1206,6 +1166,12 @@
                 stopAnimation();
                 progress = Number(event.target.value) / 100;
                 applyFoldProgress(progress);
+            });
+
+            document.querySelectorAll('input[name="speed"]').forEach((radio) => {
+                radio.addEventListener("change", (event) => {
+                    speedMultiplier = Number(event.target.value);
+                });
             });
 
             window.addEventListener("resize", updateSelectedPreview);
