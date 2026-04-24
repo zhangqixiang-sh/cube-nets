@@ -3,219 +3,1231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>正方体11种展开图</title>
+    <title>正方体 11 种展开图</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #efe7dc;
+            --paper: rgba(255, 251, 245, 0.88);
+            --paper-strong: #fffaf3;
+            --ink: #14222f;
+            --muted: #5a6c77;
+            --line: rgba(20, 34, 47, 0.12);
+            --accent: #d86c4a;
+            --accent-soft: rgba(216, 108, 74, 0.16);
+            --teal: #2d7f80;
+            --navy: #102738;
+            --shadow: 0 22px 50px rgba(16, 39, 56, 0.12);
+            --face-1: #ef6f6c;
+            --face-2: #4db6ac;
+            --face-3: #4f8dd6;
+            --face-4: #f29f67;
+            --face-5: #7fcb92;
+            --face-6: #f0d46d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+            min-height: 100vh;
+            font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.75), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(45, 127, 128, 0.2), transparent 26%),
+                linear-gradient(145deg, #f5eee4 0%, #ece2d5 44%, #e4d6c7 100%);
+            padding: 24px;
         }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+
+        .shell {
+            max-width: 1560px;
+            margin: 0 auto;
         }
-        .category {
-            margin-bottom: 40px;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            border-radius: 999px;
+            background: rgba(16, 39, 56, 0.07);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--teal);
         }
-        .category-title {
-            font-size: 20px;
-            color: #2196F3;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .nets-grid {
+
+        .layout {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 30px;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 20px;
+            align-items: start;
         }
-        .net-item {
+
+        .sidebar,
+        .content {
+            border-radius: 28px;
+            background: var(--paper);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .sidebar {
+            padding: 20px;
+            position: sticky;
+            top: 24px;
+            max-height: calc(100vh - 48px);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
-        .net-label {
-            font-size: 14px;
-            color: #666;
+
+        .sidebar-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-head h2 {
+            font-size: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .sidebar-head span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .net-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .net-item {
+            width: 100%;
+            border: 1px solid transparent;
+            border-radius: 22px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.52);
+            cursor: pointer;
+            transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+            text-align: left;
+        }
+
+        .net-item:hover {
+            transform: translateY(-1px);
+            border-color: rgba(45, 127, 128, 0.28);
+            box-shadow: 0 10px 26px rgba(16, 39, 56, 0.08);
+        }
+
+        .net-item.active {
+            border-color: rgba(216, 108, 74, 0.42);
+            background:
+                linear-gradient(135deg, rgba(216, 108, 74, 0.14), rgba(255, 255, 255, 0.88)),
+                rgba(255, 255, 255, 0.9);
+            box-shadow: 0 16px 34px rgba(216, 108, 74, 0.12);
+        }
+
+        .net-item-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
             margin-bottom: 10px;
         }
+
+        .net-index {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .net-pattern {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .net-item-bottom {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .net-meta h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .net-meta p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .content-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .content-head h2 {
+            font-size: clamp(28px, 3vw, 40px);
+            line-height: 1.08;
+            letter-spacing: -0.04em;
+            margin-bottom: 10px;
+        }
+
+        .content-head p {
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 680px;
+        }
+
+        .chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .chip {
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(16, 39, 56, 0.06);
+            color: var(--ink);
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .chip.state {
+            background: rgba(45, 127, 128, 0.13);
+            color: var(--teal);
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: 320px minmax(0, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 248, 242, 0.86));
+            border: 1px solid rgba(20, 34, 47, 0.08);
+            border-radius: 24px;
+            padding: 18px;
+            min-height: 100%;
+        }
+
+        .card-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-head h3 {
+            font-size: 18px;
+            letter-spacing: -0.02em;
+        }
+
+        .card-head span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .hero-net-wrap {
+            display: grid;
+            place-items: center;
+            min-height: 540px;
+            padding: 16px;
+            border-radius: 20px;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(216, 108, 74, 0.08), transparent 26%),
+                radial-gradient(circle at 80% 80%, rgba(45, 127, 128, 0.12), transparent 28%),
+                rgba(255, 255, 255, 0.72);
+        }
+
+        .viewer-card {
+            display: flex;
+            flex-direction: column;
+            min-height: 720px;
+            background:
+                radial-gradient(circle at top, rgba(53, 112, 150, 0.22), transparent 38%),
+                linear-gradient(165deg, #163245 0%, #112737 58%, #0f2130 100%);
+            color: #eef7fa;
+        }
+
+        .viewer-card .card-head h3,
+        .viewer-card .card-head span {
+            color: #eef7fa;
+        }
+
+        .viewer-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #eef7fa;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, #dc7d4c, #e39b66);
+            color: #1c2025;
+        }
+
+        .btn.active {
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.28) inset;
+        }
+
+        .range-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+            min-width: min(100%, 320px);
+        }
+
+        .range-wrap label {
+            font-size: 13px;
+            color: rgba(238, 247, 250, 0.82);
+            white-space: nowrap;
+        }
+
+        .range-wrap input {
+            flex: 1;
+            accent-color: #e39b66;
+        }
+
+        .canvas-shell {
+            position: relative;
+            flex: 1;
+            min-height: 520px;
+            border-radius: 22px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.16), transparent 30%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(9, 18, 28, 0.18));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #cubeCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: grab;
+        }
+
+        #cubeCanvas.dragging {
+            cursor: grabbing;
+        }
+
+        .viewer-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+            color: rgba(238, 247, 250, 0.78);
+            font-size: 13px;
+        }
+
         .net-canvas {
             display: grid;
-            gap: 2px;
-            padding: 10px;
-            background: #fafafa;
-            border-radius: 8px;
+            gap: 3px;
+            padding: 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.58);
+            box-shadow: inset 0 0 0 1px rgba(20, 34, 47, 0.05);
         }
+
+        .net-canvas.compact {
+            gap: 2px;
+            padding: 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.82);
+        }
+
         .cell {
-            width: 40px;
-            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: white;
-            border-radius: 4px;
-            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 800;
+            border: 2px solid rgba(15, 30, 40, 0.1);
+            user-select: none;
         }
-        .cell-1 { background: #FF6B6B; }
-        .cell-2 { background: #4ECDC4; }
-        .cell-3 { background: #45B7D1; }
-        .cell-4 { background: #FFA07A; }
-        .cell-5 { background: #98D8C8; }
-        .cell-6 { background: #F7DC6F; color: #333; }
-        .empty { background: transparent; border: none; }
+
+        .compact .cell {
+            border-radius: 5px;
+            font-size: 11px;
+            border-width: 1px;
+        }
+
+        .empty {
+            visibility: hidden;
+        }
+
+        .cell-1 { background: var(--face-1); }
+        .cell-2 { background: var(--face-2); }
+        .cell-3 { background: var(--face-3); }
+        .cell-4 { background: var(--face-4); }
+        .cell-5 { background: var(--face-5); }
+        .cell-6 { background: var(--face-6); color: #26313a; }
+
+        @media (max-width: 1180px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+
+            .net-list {
+                max-height: 420px;
+            }
+
+            .panel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-net-wrap {
+                min-height: 360px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 14px;
+            }
+
+            .sidebar,
+            .content {
+                border-radius: 22px;
+            }
+
+            .content {
+                padding: 18px;
+            }
+
+            .content-head {
+                flex-direction: column;
+            }
+
+            .chips {
+                justify-content: flex-start;
+            }
+
+            .range-wrap {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .viewer-card {
+                min-height: 640px;
+            }
+
+            .canvas-shell {
+                min-height: 420px;
+            }
+
+            .hero-net-wrap {
+                min-height: 300px;
+                padding: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>正方体11种展开图</h1>
-
-    <!-- 1-4-1 型 -->
-    <div class="category">
-        <div class="category-title">一、1-4-1 型（6种）- 中间4个，上下各1个</div>
-        <div class="nets-grid">
-            
-            <!-- 第1种 -->
-            <div class="net-item">
-                <div class="net-label">第1种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="cell cell-6">6</div><div class="empty"></div><div class="empty"></div>
+    <div class="shell">
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-head">
+                    <div>
+                        <h2>展开图列表</h2>
+                        <span>点击左侧任意一种进行查看</span>
+                    </div>
+                    <span>共 11 种</span>
                 </div>
-            </div>
+                <div class="net-list" id="netList"></div>
+            </aside>
 
-            <!-- 第2种 -->
-            <div class="net-item">
-                <div class="net-label">第2种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="cell cell-6">6</div><div class="empty"></div><div class="empty"></div>
+            <main class="content">
+                <div class="content-head">
+                    <div>
+                        <div class="eyebrow">当前选择</div>
+                        <h2 id="netTitle"></h2>
+                        <p id="netDescription"></p>
+                    </div>
+                    <div class="chips">
+                        <div class="chip" id="patternChip"></div>
+                        <div class="chip state" id="stateChip"></div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- 第3种 -->
-            <div class="net-item">
-                <div class="net-label">第3种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="empty"></div><div class="empty"></div><div class="cell cell-6">6</div>
+                <div class="panel-grid">
+                    <section class="card">
+                        <div class="card-head">
+                            <h3>平面结构预览</h3>
+                            <span>与左侧选中项同步</span>
+                        </div>
+                        <div class="hero-net-wrap" id="heroNetWrap"></div>
+                    </section>
+
+                    <section class="card viewer-card">
+                        <div class="card-head">
+                            <h3>3D 折叠 / 展开演示</h3>
+                            <span>拖拽旋转，双击复位视角</span>
+                        </div>
+
+                        <div class="viewer-toolbar">
+                            <button class="btn" id="unfoldBtn">展开成平面</button>
+                            <button class="btn primary" id="foldBtn">折叠成立方体</button>
+                            <button class="btn" id="autoplayBtn">自动巡览</button>
+                            <div class="range-wrap">
+                                <label for="progressRange">折叠进度</label>
+                                <input id="progressRange" type="range" min="0" max="100" step="1" value="0">
+                            </div>
+                        </div>
+
+                        <div class="canvas-shell">
+                            <canvas id="cubeCanvas"></canvas>
+                        </div>
+
+                        <div class="viewer-footer">
+                            <span id="viewerHint">当前为平面状态，可点击“折叠成立方体”观看动画。</span>
+                            <span id="progressText">0%</span>
+                        </div>
+                    </section>
                 </div>
-            </div>
-
-            <!-- 第4种 -->
-            <div class="net-item">
-                <div class="net-label">第4种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="empty"></div><div class="empty"></div><div class="cell cell-5">5</div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="cell cell-6">6</div><div class="empty"></div><div class="empty"></div>
-                </div>
-            </div>
-
-            <!-- 第5种 -->
-            <div class="net-item">
-                <div class="net-label">第5种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="empty"></div><div class="empty"></div><div class="cell cell-6">6</div>
-                </div>
-            </div>
-
-            <!-- 第6种 -->
-            <div class="net-item">
-                <div class="net-label">第6种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="empty"></div><div class="empty"></div><div class="cell cell-5">5</div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="cell cell-4">4</div>
-                    <div class="empty"></div><div class="empty"></div><div class="empty"></div><div class="cell cell-6">6</div>
-                </div>
-            </div>
-
+            </main>
         </div>
     </div>
 
-    <!-- 1-3-2 型 -->
-    <div class="category">
-        <div class="category-title">二、1-3-2 型（3种）- 中间3个，上1下2</div>
-        <div class="nets-grid">
-            
-            <!-- 第7种: 上1个在左，下2个向右错位 -->
-            <div class="net-item">
-                <div class="net-label">第7种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="empty"></div>
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-4">4</div><div class="cell cell-6">6</div>
-                </div>
-            </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const NETS = [
+            {
+                id: 1,
+                name: "第 1 种",
+                pattern: "1-4-1 型",
+                description: "中间 4 个正方形连成一排，上下各连接 1 个。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 1, y: 0 }, { face: 6, x: 1, y: 2 }
+                ]
+            },
+            {
+                id: 2,
+                name: "第 2 种",
+                pattern: "1-4-1 型",
+                description: "上方的单格位于最左侧，下方单格位于中间。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 0, y: 0 }, { face: 6, x: 1, y: 2 }
+                ]
+            },
+            {
+                id: 3,
+                name: "第 3 种",
+                pattern: "1-4-1 型",
+                description: "上方单格在左端，下方单格挂在最右端。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 0, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 4,
+                name: "第 4 种",
+                pattern: "1-4-1 型",
+                description: "上方单格在最右端，下方单格位于中间。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 3, y: 0 }, { face: 6, x: 1, y: 2 }
+                ]
+            },
+            {
+                id: 5,
+                name: "第 5 种",
+                pattern: "1-4-1 型",
+                description: "上方单格在中间，下方单格挂在最右端。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 1, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 6,
+                name: "第 6 种",
+                pattern: "1-4-1 型",
+                description: "上下两个单格分别位于最右端和最右下角。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 3, y: 1 }, { face: 5, x: 3, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 7,
+                name: "第 7 种",
+                pattern: "1-3-2 型",
+                description: "中间 3 个连成一排，上方 1 个在左，下方 2 个向右延展。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 2, y: 2 }, { face: 5, x: 0, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 8,
+                name: "第 8 种",
+                pattern: "1-3-2 型",
+                description: "上方 1 个位于中间，下方 2 个依次向右延展。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 2, y: 2 }, { face: 5, x: 1, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 9,
+                name: "第 9 种",
+                pattern: "1-3-2 型",
+                description: "上方 1 个位于右侧，下方 2 个连接在右下方。",
+                cells: [
+                    { face: 1, x: 1, y: 1 }, { face: 2, x: 0, y: 1 }, { face: 3, x: 2, y: 1 },
+                    { face: 4, x: 2, y: 2 }, { face: 5, x: 2, y: 0 }, { face: 6, x: 3, y: 2 }
+                ]
+            },
+            {
+                id: 10,
+                name: "第 10 种",
+                pattern: "2-2-2 型",
+                description: "三行各 2 个方格，整体呈阶梯状排列。",
+                cells: [
+                    { face: 1, x: 0, y: 2 }, { face: 2, x: 1, y: 2 }, { face: 3, x: 1, y: 1 },
+                    { face: 4, x: 2, y: 1 }, { face: 5, x: 2, y: 0 }, { face: 6, x: 3, y: 0 }
+                ]
+            },
+            {
+                id: 11,
+                name: "第 11 种",
+                pattern: "3-3 型",
+                description: "上下两行各 3 个方格，整体错开连接。",
+                cells: [
+                    { face: 1, x: 2, y: 1 }, { face: 2, x: 3, y: 1 }, { face: 3, x: 4, y: 1 },
+                    { face: 4, x: 0, y: 0 }, { face: 5, x: 1, y: 0 }, { face: 6, x: 2, y: 0 }
+                ]
+            }
+        ];
 
-            <!-- 第8种: 上1个在中，下2个居中向右错位 -->
-            <div class="net-item">
-                <div class="net-label">第8种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="cell cell-5">5</div><div class="empty"></div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="empty"></div>
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-4">4</div><div class="cell cell-6">6</div>
-                </div>
-            </div>
+        const FACE_COLORS = {
+            1: "#ef6f6c",
+            2: "#4db6ac",
+            3: "#4f8dd6",
+            4: "#f29f67",
+            5: "#7fcb92",
+            6: "#f0d46d"
+        };
 
-            <!-- 第9种: 上1个在右，下2个在右错位 -->
-            <div class="net-item">
-                <div class="net-label">第9种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-5">5</div><div class="empty"></div>
-                    <div class="cell cell-2">2</div><div class="cell cell-1">1</div><div class="cell cell-3">3</div><div class="empty"></div>
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-4">4</div><div class="cell cell-6">6</div>
-                </div>
-            </div>
+        const netList = document.getElementById("netList");
+        const heroNetWrap = document.getElementById("heroNetWrap");
+        const netTitle = document.getElementById("netTitle");
+        const netDescription = document.getElementById("netDescription");
+        const patternChip = document.getElementById("patternChip");
+        const stateChip = document.getElementById("stateChip");
+        const viewerHint = document.getElementById("viewerHint");
+        const progressText = document.getElementById("progressText");
+        const progressRange = document.getElementById("progressRange");
+        const foldBtn = document.getElementById("foldBtn");
+        const unfoldBtn = document.getElementById("unfoldBtn");
+        const autoplayBtn = document.getElementById("autoplayBtn");
+        const canvas = document.getElementById("cubeCanvas");
 
-        </div>
-    </div>
+        let currentNetIndex = 0;
+        let progress = 0;
+        let animationFrame = null;
+        let autoplayTimer = null;
+        let autoplayEnabled = false;
 
-    <!-- 2-2-2 型 -->
-    <div class="category">
-        <div class="category-title">三、2-2-2 型（1种）- 阶梯状</div>
-        <div class="nets-grid">
-            
-            <!-- 第10种 -->
-            <div class="net-item">
-                <div class="net-label">第10种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(4, 40px); grid-template-rows: repeat(3, 40px);">
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-5">5</div><div class="cell cell-6">6</div>
-                    <div class="empty"></div><div class="cell cell-3">3</div><div class="cell cell-4">4</div><div class="empty"></div>
-                    <div class="cell cell-1">1</div><div class="cell cell-2">2</div><div class="empty"></div><div class="empty"></div>
-                </div>
-            </div>
+        let scene;
+        let camera;
+        let renderer;
+        let rootSpinGroup;
+        let centerGroup;
+        let contentGroup;
+        let currentStructure = null;
+        let dragState = { active: false, x: 0, y: 0 };
+        let spin = { x: -0.36, y: 0.72 };
 
-        </div>
-    </div>
+        function getBounds(net) {
+            const xs = net.cells.map((cell) => cell.x);
+            const ys = net.cells.map((cell) => cell.y);
+            return {
+                minX: Math.min(...xs),
+                maxX: Math.max(...xs),
+                minY: Math.min(...ys),
+                maxY: Math.max(...ys)
+            };
+        }
 
-    <!-- 3-3 型 -->
-    <div class="category">
-        <div class="category-title">四、3-3 型（1种）- 两行各3个，错开</div>
-        <div class="nets-grid">
-            
-            <!-- 第11种 -->
-            <div class="net-item">
-                <div class="net-label">第11种</div>
-                <div class="net-canvas" style="grid-template-columns: repeat(5, 40px); grid-template-rows: repeat(2, 40px);">
-                    <div class="cell cell-4">4</div><div class="cell cell-5">5</div><div class="cell cell-6">6</div><div class="empty"></div><div class="empty"></div>
-                    <div class="empty"></div><div class="empty"></div><div class="cell cell-1">1</div><div class="cell cell-2">2</div><div class="cell cell-3">3</div>
-                </div>
-            </div>
+        function createNetGrid(net, cellSize, compact) {
+            const bounds = getBounds(net);
+            const width = bounds.maxX - bounds.minX + 1;
+            const height = bounds.maxY - bounds.minY + 1;
+            const faceMap = new Map(net.cells.map((cell) => [`${cell.x},${cell.y}`, cell.face]));
+            const grid = document.createElement("div");
+            grid.className = `net-canvas${compact ? " compact" : ""}`;
+            grid.style.gridTemplateColumns = `repeat(${width}, ${cellSize}px)`;
+            grid.style.gridTemplateRows = `repeat(${height}, ${cellSize}px)`;
 
-        </div>
-    </div>
+            for (let y = bounds.minY; y <= bounds.maxY; y += 1) {
+                for (let x = bounds.minX; x <= bounds.maxX; x += 1) {
+                    const key = `${x},${y}`;
+                    const face = faceMap.get(key);
+                    const cell = document.createElement("div");
+                    cell.style.width = `${cellSize}px`;
+                    cell.style.height = `${cellSize}px`;
+                    if (!face) {
+                        cell.className = "empty";
+                    } else {
+                        cell.className = `cell cell-${face}`;
+                        cell.textContent = face;
+                        cell.style.fontSize = `${Math.max(11, Math.round(cellSize * 0.32))}px`;
+                    }
+                    grid.appendChild(cell);
+                }
+            }
 
+            return grid;
+        }
+
+        function renderSidebar() {
+            netList.innerHTML = "";
+            NETS.forEach((net, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `net-item${index === currentNetIndex ? " active" : ""}`;
+                button.addEventListener("click", () => selectNet(index));
+
+                const top = document.createElement("div");
+                top.className = "net-item-top";
+                top.innerHTML = `
+                    <span class="net-index">${net.name}</span>
+                    <span class="net-pattern">${net.pattern}</span>
+                `;
+
+                const bottom = document.createElement("div");
+                bottom.className = "net-item-bottom";
+
+                const preview = createNetGrid(net, 18, true);
+                const meta = document.createElement("div");
+                meta.className = "net-meta";
+                meta.innerHTML = `
+                    <h3>${net.pattern}</h3>
+                    <p>${net.description}</p>
+                `;
+
+                bottom.appendChild(preview);
+                bottom.appendChild(meta);
+                button.appendChild(top);
+                button.appendChild(bottom);
+                netList.appendChild(button);
+            });
+        }
+
+        function updateSelectedPreview() {
+            const net = NETS[currentNetIndex];
+            netTitle.textContent = `${net.name} · ${net.pattern}`;
+            netDescription.textContent = net.description;
+            patternChip.textContent = `${net.pattern} / 6 面`;
+
+            heroNetWrap.innerHTML = "";
+            const bounds = getBounds(net);
+            const width = bounds.maxX - bounds.minX + 1;
+            const height = bounds.maxY - bounds.minY + 1;
+            const maxCell = window.innerWidth < 760 ? 54 : 72;
+            const cellSize = Math.min(maxCell, Math.floor(280 / Math.max(width, height)) + 18);
+            heroNetWrap.appendChild(createNetGrid(net, cellSize, false));
+
+            document.querySelectorAll(".net-item").forEach((item, index) => {
+                item.classList.toggle("active", index === currentNetIndex);
+            });
+        }
+
+        function buildNeighborMap(net) {
+            const faceAt = new Map(net.cells.map((cell) => [`${cell.x},${cell.y}`, cell.face]));
+            const neighbors = {};
+            const deltas = [
+                { dir: "right", dx: 1, dy: 0 },
+                { dir: "left", dx: -1, dy: 0 },
+                { dir: "down", dx: 0, dy: 1 },
+                { dir: "up", dx: 0, dy: -1 }
+            ];
+
+            net.cells.forEach((cell) => {
+                neighbors[cell.face] = [];
+                deltas.forEach(({ dir, dx, dy }) => {
+                    const next = faceAt.get(`${cell.x + dx},${cell.y + dy}`);
+                    if (next) {
+                        neighbors[cell.face].push({ face: next, dir });
+                    }
+                });
+            });
+
+            return neighbors;
+        }
+
+        function buildTree(net) {
+            const neighbors = buildNeighborMap(net);
+            const rootFace = 1;
+            const tree = {
+                rootFace,
+                children: {},
+                parent: { [rootFace]: null },
+                dir: {}
+            };
+            const queue = [rootFace];
+            const visited = new Set([rootFace]);
+
+            while (queue.length) {
+                const face = queue.shift();
+                tree.children[face] = tree.children[face] || [];
+                neighbors[face].forEach((edge) => {
+                    if (!visited.has(edge.face)) {
+                        visited.add(edge.face);
+                        tree.parent[edge.face] = face;
+                        tree.dir[edge.face] = edge.dir;
+                        tree.children[face].push(edge.face);
+                        queue.push(edge.face);
+                    }
+                });
+            }
+
+            if (visited.size !== 6) {
+                throw new Error(`展开图 ${net.id} 无法完整建立折叠树。`);
+            }
+
+            return tree;
+        }
+
+        function createLabelTexture(faceNumber) {
+            const size = 256;
+            const canvas2d = document.createElement("canvas");
+            canvas2d.width = size;
+            canvas2d.height = size;
+            const ctx = canvas2d.getContext("2d");
+            ctx.clearRect(0, 0, size, size);
+            ctx.fillStyle = faceNumber === 6 ? "#24313a" : "#ffffff";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.font = "700 126px Avenir Next, PingFang SC, sans-serif";
+            ctx.lineJoin = "round";
+            ctx.lineWidth = 18;
+            ctx.strokeStyle = "rgba(20, 34, 47, 0.18)";
+            ctx.strokeText(String(faceNumber), size / 2, size / 2 + 6);
+            ctx.fillText(String(faceNumber), size / 2, size / 2 + 6);
+            const texture = new THREE.CanvasTexture(canvas2d);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        function createFaceObject(faceNumber) {
+            const group = new THREE.Group();
+            const plateGeometry = new THREE.BoxGeometry(1, 0.08, 1);
+            const plateMaterial = new THREE.MeshBasicMaterial({
+                color: FACE_COLORS[faceNumber]
+            });
+            const plate = new THREE.Mesh(plateGeometry, plateMaterial);
+            plate.castShadow = true;
+            plate.receiveShadow = true;
+            group.add(plate);
+
+            const labelTexture = createLabelTexture(faceNumber);
+            const labelMaterial = new THREE.MeshBasicMaterial({
+                map: labelTexture,
+                transparent: true,
+                side: THREE.DoubleSide
+            });
+            const labelGeometry = new THREE.PlaneGeometry(0.72, 0.72);
+
+            const topLabel = new THREE.Mesh(labelGeometry, labelMaterial);
+            topLabel.position.y = 0.042;
+            topLabel.rotation.x = -Math.PI / 2;
+            group.add(topLabel);
+
+            const bottomLabel = new THREE.Mesh(labelGeometry, labelMaterial.clone());
+            bottomLabel.position.y = -0.042;
+            bottomLabel.rotation.x = Math.PI / 2;
+            group.add(bottomLabel);
+
+            const edges = new THREE.LineSegments(
+                new THREE.EdgesGeometry(plateGeometry),
+                new THREE.LineBasicMaterial({ color: 0x1d303a, transparent: true, opacity: 0.34 })
+            );
+            group.add(edges);
+            return group;
+        }
+
+        function hingePosition(dir) {
+            if (dir === "right") return [0.5, 0, 0];
+            if (dir === "left") return [-0.5, 0, 0];
+            if (dir === "down") return [0, 0, 0.5];
+            return [0, 0, -0.5];
+        }
+
+        function hingeRotation(hinge, dir, amount) {
+            hinge.rotation.set(0, 0, 0);
+            const angle = (Math.PI / 2) * amount;
+            if (dir === "right") hinge.rotation.z = -angle;
+            if (dir === "left") hinge.rotation.z = angle;
+            if (dir === "down") hinge.rotation.x = angle;
+            if (dir === "up") hinge.rotation.x = -angle;
+        }
+
+        function getContentCenter() {
+            const box = new THREE.Box3().setFromObject(contentGroup);
+            return box.getCenter(new THREE.Vector3());
+        }
+
+        function setHingesForProgress(amount) {
+            if (!currentStructure) return;
+            Object.values(currentStructure.hinges).forEach(({ hinge, dir }) => {
+                hingeRotation(hinge, dir, amount);
+            });
+        }
+
+        function computeStableCenters() {
+            const previous = progress;
+            setHingesForProgress(0);
+            const flatCenter = getContentCenter().clone();
+            setHingesForProgress(1);
+            const foldedCenter = getContentCenter().clone();
+            setHingesForProgress(previous);
+            return { flatCenter, foldedCenter };
+        }
+
+        function buildNetStructure(net) {
+            contentGroup.clear();
+            const tree = buildTree(net);
+            const nodes = {};
+            const hinges = {};
+
+            net.cells.forEach((cell) => {
+                const faceNode = new THREE.Group();
+                faceNode.add(createFaceObject(cell.face));
+                nodes[cell.face] = faceNode;
+            });
+
+            contentGroup.add(nodes[tree.rootFace]);
+
+            Object.keys(tree.parent).forEach((key) => {
+                const face = Number(key);
+                const parent = tree.parent[face];
+                if (parent === null) return;
+
+                const dir = tree.dir[face];
+                const hinge = new THREE.Group();
+                const [x, y, z] = hingePosition(dir);
+                hinge.position.set(x, y, z);
+                nodes[parent].add(hinge);
+                nodes[face].position.set(x, y, z);
+                hinge.add(nodes[face]);
+                hinges[face] = { hinge, dir };
+            });
+
+            currentStructure = { tree, nodes, hinges };
+            const stableCenters = computeStableCenters();
+            currentStructure.flatCenter = stableCenters.flatCenter;
+            currentStructure.foldedCenter = stableCenters.foldedCenter;
+            applyFoldProgress(progress);
+        }
+
+        function applyFoldProgress(amount) {
+            if (!currentStructure) return;
+            setHingesForProgress(amount);
+            const stableCenter = currentStructure.flatCenter.clone().lerp(currentStructure.foldedCenter, amount);
+            centerGroup.position.set(-stableCenter.x, -stableCenter.y + 0.9, -stableCenter.z);
+            updateViewerText();
+        }
+
+        function stopAnimation() {
+            if (animationFrame) {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
+        }
+
+        function animateTo(target) {
+            stopAnimation();
+            const start = progress;
+            const delta = target - start;
+            const duration = 900;
+            const startTime = performance.now();
+
+            function step(now) {
+                const t = Math.min(1, (now - startTime) / duration);
+                const eased = t < 0.5
+                    ? 4 * t * t * t
+                    : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                progress = start + delta * eased;
+                progressRange.value = String(Math.round(progress * 100));
+                applyFoldProgress(progress);
+                if (t < 1) {
+                    animationFrame = requestAnimationFrame(step);
+                } else {
+                    animationFrame = null;
+                    progress = target;
+                    progressRange.value = String(Math.round(progress * 100));
+                    applyFoldProgress(progress);
+                }
+            }
+
+            animationFrame = requestAnimationFrame(step);
+        }
+
+        function stopAutoplay() {
+            autoplayEnabled = false;
+            autoplayBtn.classList.remove("active");
+            autoplayBtn.textContent = "自动巡览";
+            if (autoplayTimer) {
+                clearTimeout(autoplayTimer);
+                autoplayTimer = null;
+            }
+        }
+
+        function runAutoplayLoop() {
+            if (!autoplayEnabled) return;
+            animateTo(1);
+            autoplayTimer = setTimeout(() => {
+                if (!autoplayEnabled) return;
+                animateTo(0);
+                autoplayTimer = setTimeout(() => {
+                    if (!autoplayEnabled) return;
+                    currentNetIndex = (currentNetIndex + 1) % NETS.length;
+                    updateUIForSelection();
+                    runAutoplayLoop();
+                }, 1500);
+            }, 1600);
+        }
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayEnabled = true;
+            autoplayBtn.classList.add("active");
+            autoplayBtn.textContent = "停止巡览";
+            runAutoplayLoop();
+        }
+
+        function updateViewerText() {
+            const value = Math.round(progress * 100);
+            progressText.textContent = `${value}%`;
+            foldBtn.classList.toggle("active", progress > 0.98);
+            unfoldBtn.classList.toggle("active", progress < 0.02);
+
+            if (progress < 0.02) {
+                stateChip.textContent = "当前状态：平面展开";
+                viewerHint.textContent = "当前为平面状态，可点击“折叠成立方体”观看动画。";
+            } else if (progress > 0.98) {
+                stateChip.textContent = "当前状态：已折叠成立方体";
+                viewerHint.textContent = "当前已完成折叠，可点击“展开成平面”回到原始展开图。";
+            } else {
+                stateChip.textContent = "当前状态：正在折叠 / 展开";
+                viewerHint.textContent = "拖拽滑块可以手动观察每个面的旋转过程。";
+            }
+        }
+
+        function updateUIForSelection() {
+            updateSelectedPreview();
+            buildNetStructure(NETS[currentNetIndex]);
+            applyFoldProgress(progress);
+        }
+
+        function selectNet(index) {
+            currentNetIndex = index;
+            stopAutoplay();
+            progress = 0;
+            progressRange.value = "0";
+            stopAnimation();
+            updateUIForSelection();
+        }
+
+        function initThree() {
+            scene = new THREE.Scene();
+            scene.background = null;
+
+            camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+            camera.position.set(0, 2.4, 10.6);
+            camera.lookAt(0, -0.15, 0);
+
+            renderer = new THREE.WebGLRenderer({
+                canvas,
+                antialias: true,
+                alpha: true
+            });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.outputEncoding = THREE.sRGBEncoding;
+
+            rootSpinGroup = new THREE.Group();
+            centerGroup = new THREE.Group();
+            contentGroup = new THREE.Group();
+
+            rootSpinGroup.add(centerGroup);
+            centerGroup.add(contentGroup);
+            scene.add(rootSpinGroup);
+
+            rootSpinGroup.rotation.set(spin.x, spin.y, 0);
+        }
+
+        function resizeRenderer() {
+            const rect = canvas.getBoundingClientRect();
+            const width = Math.max(1, Math.floor(rect.width));
+            const height = Math.max(1, Math.floor(rect.height));
+            const needsResize = canvas.width !== width || canvas.height !== height;
+            if (needsResize) {
+                renderer.setSize(width, height, false);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            }
+        }
+
+        function renderLoop() {
+            resizeRenderer();
+            renderer.render(scene, camera);
+            requestAnimationFrame(renderLoop);
+        }
+
+        function resetView() {
+            spin = { x: -0.36, y: 0.72 };
+            rootSpinGroup.rotation.set(spin.x, spin.y, 0);
+        }
+
+        function attachCanvasEvents() {
+            const startDrag = (clientX, clientY) => {
+                dragState.active = true;
+                dragState.x = clientX;
+                dragState.y = clientY;
+                canvas.classList.add("dragging");
+            };
+
+            const moveDrag = (clientX, clientY) => {
+                if (!dragState.active) return;
+                const deltaX = clientX - dragState.x;
+                const deltaY = clientY - dragState.y;
+                dragState.x = clientX;
+                dragState.y = clientY;
+                spin.y += deltaX * 0.01;
+                spin.x += deltaY * 0.01;
+                rootSpinGroup.rotation.set(spin.x, spin.y, 0);
+            };
+
+            const endDrag = () => {
+                dragState.active = false;
+                canvas.classList.remove("dragging");
+            };
+
+            canvas.addEventListener("mousedown", (event) => startDrag(event.clientX, event.clientY));
+            window.addEventListener("mousemove", (event) => moveDrag(event.clientX, event.clientY));
+            window.addEventListener("mouseup", endDrag);
+
+            canvas.addEventListener("touchstart", (event) => {
+                const touch = event.touches[0];
+                startDrag(touch.clientX, touch.clientY);
+            }, { passive: true });
+
+            canvas.addEventListener("touchmove", (event) => {
+                const touch = event.touches[0];
+                moveDrag(touch.clientX, touch.clientY);
+            }, { passive: true });
+
+            canvas.addEventListener("touchend", endDrag);
+            canvas.addEventListener("dblclick", resetView);
+        }
+
+        function bindEvents() {
+            foldBtn.addEventListener("click", () => {
+                stopAutoplay();
+                animateTo(1);
+            });
+
+            unfoldBtn.addEventListener("click", () => {
+                stopAutoplay();
+                animateTo(0);
+            });
+
+            autoplayBtn.addEventListener("click", () => {
+                if (autoplayEnabled) {
+                    stopAutoplay();
+                } else {
+                    startAutoplay();
+                }
+            });
+
+            progressRange.addEventListener("input", (event) => {
+                stopAutoplay();
+                stopAnimation();
+                progress = Number(event.target.value) / 100;
+                applyFoldProgress(progress);
+            });
+
+            window.addEventListener("resize", updateSelectedPreview);
+        }
+
+        function init() {
+            if (!window.THREE) {
+                viewerHint.textContent = "Three.js 加载失败，当前无法显示 3D 动画。";
+                return;
+            }
+
+            renderSidebar();
+            updateSelectedPreview();
+            initThree();
+            bindEvents();
+            attachCanvasEvents();
+            buildNetStructure(NETS[currentNetIndex]);
+            updateViewerText();
+            renderLoop();
+        }
+
+        init();
+    </script>
 </body>
 </html>
